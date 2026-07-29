@@ -39,11 +39,11 @@ NodeMCU-32S + RDA5807(RRD-102) + SSD1306 OLED 之 FM 收音機
       ▼                                 ▼
  ESP32 Vin (5V)                  PAM8403 VCC (5V)
       │
-      ▼ (ESP32 內建 LDO 降壓)
+      ▼
  ESP32 3.3V 腳位
       │
       ▼
-RDA5807 VCC (3.3V)
+RDA5807 、 0.96吋OLED
 ```
 
 > 注意：RRD-102 與 OLED 由 ESP32 的 3.3V pin 供電，**不可接 5V**。
