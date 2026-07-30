@@ -10,7 +10,7 @@
  * - 全頻段自動掃描 (具備 Peak Detection 過濾旁波帶，掃描前清空舊頻道以防重複)
  * - 頻道自動排序 (掃描後或手動收藏後，頻道皆會依頻率由低至高排列)
  * - 專屬選單系統：選擇、刪除、清空、自動掃描
- * - 狀態列 UI：顯示模式、立體聲(ST)、WiFi 扇形訊號、RSSI 訊號強度
+ * - 狀態列 UI：顯示模式、立體聲(ST)、RSSI 訊號強度
  * - 智慧提示：手動調諧時動態提示該頻道是否已被收藏
  * - WiFi 配網 (Captive Portal)：自動連線或開 AP 配網
  * - NTP 網路對時：開機自動同步，每小時校正
@@ -105,7 +105,7 @@ OneButton btnNext(BTN_NEXT_PIN, true, true);  // 上方按鈕
 #define MAX_PRESETS     20    // 最大可儲存的預設頻道數
 #define SCAN_SETTLE_MS  60    // 每次設定頻率後的等待時間 (毫秒)，等待 RDA5807 鎖定訊號
 #define SCAN_PAUSE_MS   100   // 找到一個有效頻道後的暫停時間 (毫秒)，讓使用者看到結果
-#define FREQ_MIN        8750  // 最低頻率 87.5 MHz (內部以 x10 表示，即 87.5 * 10 = 875)
+#define FREQ_MIN        8750  // 最低頻率 87.5 MHz (內部以 10kHz 步進表示，87.5 MHz * 100 = 8750)
 #define FREQ_MAX        10800 // 最高頻率 108.0 MHz (內部以 x10 表示)
 #define FREQ_STEP       10    // 自動掃描頻率步進 (0.1 MHz，即 10 代表 0.1)
 

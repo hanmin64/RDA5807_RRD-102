@@ -1,64 +1,66 @@
-#ifndef WEATHER_H
-#define WEATHER_H
+#ifndef WEATHER_H       // 防止重複編譯：若未定義 WEATHER_H 則編譯以下內容
+#define WEATHER_H       // 定義 WEATHER_H，確保此標頭檔只被編譯一次
 
-#include <Arduino.h>
+#include <Arduino.h>    // Arduino 核心函式庫：提供 String、Serial 等基礎型別
 
 // ============================================================
 //  WeatherClient — OpenWeatherMap 天氣查詢封裝
 // ------------------------------------------------------------
-//  將「組 URL → HTTP GET → JSON 解析 → 儲存結果」全部封裝，
-//  主程式只需：
-//      #include "src/Weather.h"
-//      Weather.apiKey  = "你的金鑰";   // 可於 fetch() 前修改
-//      Weather.city    = "Taipei";
-//      Weather.fetch();                 // 查詢並儲存天氣
+//  將「組 URL → HTTP GET → JSON 解析 → 儲存結果」全部封裝為單一類別，
+//  主程式只需簡單的設定與呼叫即可取得天氣資料：
+//
+//      Weather.apiKey  = "你的金鑰";   // 於 fetch() 前設定 API 金鑰
+//      Weather.city    = "Taipei";     // 可選：變更城市名稱
+//      Weather.fetch();                // 執行查詢並儲存結果
 //
 //  查詢成功後可透過 getter 取得最新天氣資料：
-//      Weather.getDescription()   // 天氣概況 (如 "clear sky")
-//      Weather.getTemp()          // 溫度 (如 "25.3")
-//      Weather.getHumidity()      // 濕度 (如 "68")
-//      Weather.getPressure()      // 大氣壓力 (如 "1013")
-//      Weather.isFetched()        // 是否已成功取得過資料
+//      Weather.getDescription()   // 天氣概況（如 "clear sky"）
+//      Weather.getTemp()          // 溫度（如 "25.3"）
+//      Weather.getHumidity()      // 濕度（如 "68"）
+//      Weather.getWeatherId()     // OpenWeatherMap 天氣代碼（用於繪製圖示）
 //
-//  全域單例 Weather 已建立，可直接使用
+//  全域單例 Weather 已建立於 Weather.cpp，可直接使用
 // ============================================================
-class WeatherClient {
- public:
-  // 設定參數（可於 fetch() 前修改）
-  String city        = "Taipei";           // 城市名稱
-  String countryCode = "TW";               // 國家代碼
-  String apiKey      = "";                 // OpenWeatherMap API 金鑰
+class WeatherClient {   // 天氣查詢客戶端類別
+ public:                  // 公開成員：外部可存取的函式與變數
 
-  // 查詢天氣資料（OpenWeatherMap），解析後儲存至內部成員，
-  // 並以序列埠印出結果。回傳 true 表示查詢成功。
+  // --- 設定參數（可於 fetch() 前修改）---
+  String city        = "Taipei";           // 查詢城市名稱（預設台北）
+  String countryCode = "TW";               // 國家代碼（ISO 3166-1 alpha-2）
+  String apiKey      = "";                 // OpenWeatherMap API 金鑰（須自行申請）
+
+  // 執行天氣查詢（HTTP GET → JSON 解析 → 儲存內部成員）
+  // 回傳 true 表示查詢與解析皆成功
   bool fetch();
 
-  // --- 取得最近一次查詢的天氣資料 ---
-  String getDescription() const { return _description; }  // 天氣概況
-  String getTemp()        const { return _temp; }         // 溫度 (°C)
-  String getHumidity()    const { return _humidity; }     // 濕度 (%)
+  // --- 取得最近一次查詢的結果（getter）---
+  String getDescription() const { return _description; }  // 天氣概況文字說明
+  String getTemp()        const { return _temp; }         // 當前溫度 (°C)
+  String getHumidity()    const { return _humidity; }     // 相對濕度 (%)
   String getPressure()    const { return _pressure; }     // 大氣壓力 (hPa)
 
-  // OpenWeatherMap 天氣狀況代碼 (如 800=晴天, 801=多雲, 5xx=雨)
+  // 取得 OpenWeatherMap 天氣狀況代碼（主程式用於繪製對應的天氣圖示）
+  // 重要分類：2xx=雷雨, 3xx=毛毛雨, 5xx=雨, 6xx=雪, 7xx=霧, 800=晴天, 80x=多雲
   int getWeatherId() const { return _weatherId; }
 
-  // 是否已成功取得過至少一次天氣資料
+  // 是否已成功取得過至少一次天氣資料（用於 UI 判斷）
   bool isFetched() const { return _fetched; }
 
- private:
-  // 將字串中的 JSON 特殊字元跳脫，避免破壞輸出（保留供未來擴充）
+ private:                 // 私有成員：僅類別內部可存取
+
+  // 將字串中的 JSON 特殊字元跳脫，避免破壞輸出格式（保留供未來擴充用）
   String escapeJSON(const String& s);
 
-  // 儲存最近一次查詢結果
-  String _description = "";   // 天氣概況 (如 "clear sky")
-  String _temp        = "";   // 溫度 (攝氏)
-  String _humidity    = "";   // 濕度 (%)
-  String _pressure    = "";   // 大氣壓力 (hPa)
-  int    _weatherId   = 800;  // OpenWeatherMap 天氣狀況代碼
+  // --- 內部儲存：最近一次查詢的天氣資料 ---
+  String _description = "";   // 天氣概況文字（如 "clear sky"、"light rain"）
+  String _temp        = "";   // 溫度（攝氏，字串形式如 "25.3"）
+  String _humidity    = "";   // 濕度百分比（字串形式如 "68"）
+  String _pressure    = "";   // 大氣壓力值（hPa，字串形式如 "1013"）
+  int    _weatherId   = 800;  // OpenWeatherMap 天氣代碼（預設 800 = 晴天）
   bool   _fetched     = false; // 是否已成功取得過資料
 };
 
-// 全域單例
+// 全域單例（全域變數宣告），在 Weather.cpp 中定義實體
 extern WeatherClient Weather;
 
-#endif  // WEATHER_H
+#endif  // WEATHER_H     // 條件編譯結束
