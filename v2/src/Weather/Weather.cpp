@@ -78,22 +78,4 @@ bool WeatherClient::fetch() {
   return ok;             // 回傳是否成功
 }
 
-// ------------------------------------------------------------
-// JSON 字元跳脫（保留供未來擴充使用）
-// 將字串中的特殊字元（引號、反斜線、換行）替換為安全的跳脫形式
-// ------------------------------------------------------------
-String WeatherClient::escapeJSON(const String& s) {
-  String r;              // 儲存跳脫後的結果字串
-  r.reserve(s.length()); // 預先分配足夠的記憶體，避免重複擴充
-  for (size_t i = 0; i < s.length(); ++i) {  // 逐字元處理
-    char c = s[i];
-    switch (c) {
-      case '"':  r += "\\\""; break;  // 雙引號 → \"
-      case '\\': r += "\\\\"; break;  // 反斜線 → \\
-      case '\n': r += " ";    break;  // 換行符 → 空白
-      case '\r': r += " ";    break;  // 回車符 → 空白
-      default:   r += c;              // 一般字元直接保留
-    }
-  }
-  return r;              // 回傳跳脫後的字串
-}
+

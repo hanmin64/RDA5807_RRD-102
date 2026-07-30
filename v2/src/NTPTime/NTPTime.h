@@ -15,7 +15,6 @@
 //  使用方式：
 //    NTP.begin();          // setup() 中呼叫，初始化 NTP 設定並立即同步
 //    NTP.handle();         // loop() 中呼叫，負責每小時校時
-//    NTP.print();          // 顯示目前時間到序列埠
 //    NTP.getDateTime("%H:%M:%S"); // 取得格式化時間字串
 // ============================================================
 class NTPClock {         // NTP 時鐘類別，封裝所有網路對時相關邏輯
@@ -49,9 +48,6 @@ class NTPClock {         // NTP 時鐘類別，封裝所有網路對時相關邏
   // 取得目前已維持的時鐘時間（基於最後一次 NTP 同步 + millis() 推算）
   // 回傳 time_t（從 1970-01-01 至今的秒數）
   time_t now();
-
-  // 印出目前本地時間到序列埠（兩種格式：完整格式 + ISO 格式）
-  void print();
 
   // 依指定 strftime 格式取得時間字串，例如 "%F %T" → "2026-07-30 14:30:00"
   String getDateTime(const char* format);

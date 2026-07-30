@@ -87,8 +87,6 @@ OneButton btnNext(BTN_NEXT_PIN, true, true);  // 上方按鈕
 //  EMA (Exponential Moving Average) 濾波係數：值越小濾波越平滑，但反應越慢
 #define FREQ_EMA_ALPHA     0.10   // 頻率旋鈕 ADC 的 EMA 濾波係數
 #define VOL_EMA_ALPHA      0.10   // 音量旋鈕 ADC 的 EMA 濾波係數
-#define RSSI_ALPHA         0.30   // RSSI 訊號強度的 EMA 濾波係數 (可稍大，反應快些)
-
 // IoT 功能常數
 #define WEATHER_INTERVAL_MS  30000UL // 天氣資料更新間隔 (30 秒)
 
@@ -173,8 +171,6 @@ int lastRawVol = 0;          // 最後一次觸發音量更新的原始 ADC 值 
 // --- 當前播放參數 ---
 int currentFreq = FREQ_MIN;  // 當前 FM 頻率
 int currentVol = 0;          // 當前音量值 (0~15，0=靜音)
-int currentRSSI = 0;         // 經四捨五入後的 RSSI 強度
-float smoothedRSSI = 0;      // RSSI 的 EMA 濾波平滑值
 bool isStereo = false;       // RDA5807 目前是否接收立體聲訊號
 
 // --- 顯示更新控制 ---
@@ -1047,11 +1043,6 @@ void loadPresets() {
 void updateDisplayTask() {
   if (forceDisplayUpdate || millis() - lastDisplayUpdate > 500) {
     if (!isScanning) {
-      // 非掃描狀態下更新 RSSI 與立體聲狀態 (掃描時由 handleScanStep 處理)
-      int rawRSSI = rx.getRssi();
-      smoothedRSSI = (RSSI_ALPHA * rawRSSI) + ((1 - RSSI_ALPHA) * smoothedRSSI);
-      currentRSSI = (int)(smoothedRSSI + 0.5f);    // 四捨五入
-
       isStereo = rx.isStereo();                    // 查詢 RDA5807 是否收到立體聲
     }
     updateDisplay();
@@ -1274,12 +1265,7 @@ void updateDisplay() {
 }
 
 //==============================================================================
-//  WiFi 訊號扇形圖示繪製
-//==============================================================================
-// 使用 drawCircleHelper 繪製 4 層同心底部弧線，模擬 WiFi 扇形訊號圖樣。
-// 根據 WiFi.RSSI() 值決定顯示層數 (0~4)。
-//==============================================================================
-//  天氣狀態圖示繪製 (約 32x32 像素，大字版)
+//  天氣狀態圖示繪製 (約 32x32 像素)
 //==============================================================================
 // 根據 OpenWeatherMap 天氣代碼繪製對應的圖形符號
 // x, y = 圖示左上角座標

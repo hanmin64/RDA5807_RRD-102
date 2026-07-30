@@ -81,29 +81,6 @@ time_t NTPClock::now() {
 }
 
 // ------------------------------------------------------------
-// 印出目前本地時間到序列埠（兩種常用格式）
-// ------------------------------------------------------------
-void NTPClock::print() {
-  time_t currentTime = now();  // 取得推算後的目前時間
-  if (currentTime <= 0) {      // 若尚未同步，now() 回傳 0
-    Serial.println(F("[NTP] 尚未取得時間資料"));
-    return;
-  }
-
-  // 將 time_t 轉換為本機 tm 結構（已含 GMT+8 偏移）
-  struct tm* timeinfo = localtime(&currentTime);
-  if (timeinfo == nullptr) {  // 轉換失敗（極罕見）
-    Serial.println(F("[NTP] 時間格式轉換失敗"));
-    return;
-  }
-
-  // %A = 星期全名, %B = 月份全名, %d = 日期, %Y = 年份, %H:%M:%S = 時:分:秒
-  Serial.println(timeinfo, "[NTP] %A, %B %d %Y %H:%M:%S");
-  // %F = YYYY-MM-DD (ISO 8601), %r = 12 小時制（含 AM/PM）
-  Serial.println(timeinfo, "[NTP] %F, %r");
-}
-
-// ------------------------------------------------------------
 // 依指定 strftime 格式取得時間字串
 // 例如 getDateTime("%H:%M:%S") → "14:30:00"
 // ------------------------------------------------------------

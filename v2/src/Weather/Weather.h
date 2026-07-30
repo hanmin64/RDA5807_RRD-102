@@ -48,9 +48,6 @@ class WeatherClient {   // 天氣查詢客戶端類別
 
  private:                 // 私有成員：僅類別內部可存取
 
-  // 將字串中的 JSON 特殊字元跳脫，避免破壞輸出格式（保留供未來擴充用）
-  String escapeJSON(const String& s);
-
   // --- 內部儲存：最近一次查詢的天氣資料 ---
   String _description = "";   // 天氣概況文字（如 "clear sky"、"light rain"）
   String _temp        = "";   // 溫度（攝氏，字串形式如 "25.3"）

@@ -50,7 +50,6 @@ class WiFiManager {      // WiFi 管理類別
  private:                 // 私有成員
 
   bool _wasConnected = false;  // 記錄上一次檢查時是否處於連線狀態（用於斷線時只印一次訊息）
-  bool _firstDone    = false;  // 標記是否已完成首次初始化
 
   // 使用已儲存的 SSID/密碼嘗試自動連線
   bool tryAutoConnect();
