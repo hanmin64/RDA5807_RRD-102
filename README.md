@@ -1,4 +1,4 @@
-# RRD-102 ESP32 FM Radio Project
+# RRD-102 ESP32 FM 收音機
 
 NodeMCU-32S + RDA5807(RRD-102) + SSD1306 OLED 之 FM 收音機專案，包含多個版本演進。
 
