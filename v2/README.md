@@ -88,7 +88,7 @@ pio device monitor       # 開啟序列監控
 4. 選擇您的 WiFi 並輸入密碼，按「連線」
 5. ESP32 會自動重啟，之後開機就會自動連線
 
-> **OpenWeatherMap API 金鑰**：請自行至 [openweathermap.org](https://openweathermap.org) 申請免費 API key，並修改 `src/main.cpp:291` 的 `Weather.apiKey`。
+> **OpenWeatherMap API 金鑰**：請自行至 [openweathermap.org](https://openweathermap.org) 申請免費 API key，並修改 `src/main.cpp:287` 的 `Weather.apiKey`。
 
 ## WiFi 重置
 
