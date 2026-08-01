@@ -266,7 +266,7 @@ void setup() {
   // NTP 網路對時與天氣查詢 (僅在 WiFi 連線成功時執行)
   if (WiFiMgr.isConnected()) {
     NTP.begin();
-    Weather.apiKey = "cdaa15a68f4c0daa14d7bbd691dfb2c8";
+    Weather.apiKey = "您的OpenWeatherMap API key";
     Weather.fetch();
     // 啟動 Web 遠端遙控面板 (需 WiFi)
     Web.begin();
