@@ -1,0 +1,19 @@
+# RRD-102 ESP32 FM Radio v3 - OTA partition table (4MB flash)
+#
+#  layout:
+#    nvs      0x009000   20KB   WiFi credentials / presets (Preferences)
+#    otadata  0x00E000    8KB   OTA boot info
+#    app0     0x010000   1.8MB  App (OTA_0)
+#    app1     0x1F0000   1.8MB  App (OTA_1)
+#    spiffs   0x3D0000  128KB   Reserved (not used in this project)
+#    coredump 0x3F0000   64KB   Core dump
+#
+#  Each app partition ~1.8MB, supports OTA (app0 <-> app1).
+#
+# Name,   Type, SubType, Offset,   Size, Flags
+nvs,      data, nvs,     0x9000,   0x5000,
+otadata,  data, ota,     0xe000,   0x2000,
+app0,     app,  ota_0,   0x10000,  0x1E0000,
+app1,     app,  ota_1,   0x1F0000, 0x1E0000,
+spiffs,   data, spiffs,  0x3D0000, 0x20000,
+coredump, data, coredump,0x3F0000, 0x10000,
