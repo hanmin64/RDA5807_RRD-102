@@ -1,4 +1,4 @@
-# RRD-102 ESP32 FM 收音機
+# RRD-102 ESP32 FM Radio Project
 
 NodeMCU-32S + RDA5807(RRD-102) + SSD1306 OLED 之 FM 收音機專案，包含多個版本演進。
 
@@ -29,9 +29,24 @@ NodeMCU-32S + RDA5807(RRD-102) + SSD1306 OLED 之 FM 收音機專案，包含多
 - **OpenWeatherMap 天氣** — 每 30 秒更新，圖形化天氣圖示
 - **OLED 雙頁輪播** — 時鐘頁 ↔ 天氣頁每 6 秒切換
 
+### v3 — FM 收音機 + RDS + Web 遙控 + OTA
+
+> 資料夾：[v3/](v3/) · [詳細 README](v3/README.md)
+
+繼承 v2 全部功能，新增：
+
+- **RDS 數位廣播資訊** — 解碼電台名稱 (PS)、電台文字 (RT)、節目類型 (PTY)、交通資訊 (TP/TA)、時間 (CT)
+- **Web 遠端遙控面板** — 瀏覽器操控調頻/音量/掃描/頻道管理，含完整 JSON API
+- **OTA 無線韌體更新** — 網頁上傳 `firmware.bin` 即可更新，雙分割區 (app0/app1) 設計
+- **OLED 三頁輪播** — 時鐘 / 天氣 / RDS 每 6 秒切換
+
+> **重要修復**：PU2CLR RDA5807 函式庫已改為專案內 vendor 版（`v3/lib/PU2CLR RDA5807/`），
+> 移除了原廠 1.1.9 `getStatusRegisters()` 中多餘的 `Wire.endTransmission()`（該呼叫在 ESP32 core 3.x
+> 會送出幽靈 I2C 寫入、破壞 SSD1306 定址，造成 OLED 左上角掃描殘影）。詳細說明見 [v3 README 已知修復](v3/README.md)。
+
 ### 未來版本
 
-若有新增版本，將依此目錄結構擴充（v3/、v4/ ...），每個版本獨立目錄，
+若有新增版本，將依此目錄結構擴充（v4/、v5/ ...），每個版本獨立目錄，
 各自包含完整的 `platformio.ini`、`src/` 與 `README.md`。
 
 ## 硬體共用
@@ -71,6 +86,10 @@ pio run
 cd ../v2
 pio run
 
+# 編譯 v3
+cd ../v3
+pio run
+
 # 上傳到 ESP32（以 v2 為例）
 pio run --target upload
 
@@ -80,18 +99,24 @@ pio device monitor
 
 ## 版本間差異摘要
 
-| 功能 | v1 | v2 |
-|------|:--:|:--:|
-| FM 收音機（87.5–108 MHz） | ✓ | ✓ |
-| 手動 / 預設模式 | ✓ | ✓ |
-| 自動掃描（Peak Detection） | ✓ | ✓ |
-| 頻道儲存（NVS） | ✓ | ✓ |
-| OLED 選單系統 | ✓ | ✓ |
-| WiFi 自動連線 / 配網 | — | ✓ |
-| NTP 網路對時 | — | ✓ |
-| OpenWeatherMap 天氣 | — | ✓ |
-| 時鐘 / 天氣頁輪播 | — | ✓ |
+| 功能 | v1 | v2 | v3 |
+|------|:--:|:--:|:--:|
+| FM 收音機（87.5–108 MHz） | ✓ | ✓ | ✓ |
+| 手動 / 預設模式 | ✓ | ✓ | ✓ |
+| 自動掃描（Peak Detection） | ✓ | ✓ | ✓ |
+| 頻道儲存（NVS） | ✓ | ✓ | ✓ |
+| OLED 選單系統 | ✓ | ✓ | ✓ |
+| WiFi 自動連線 / 配網 | — | ✓ | ✓ |
+| NTP 網路對時 | — | ✓ | ✓ |
+| OpenWeatherMap 天氣 | — | ✓ | ✓ |
+| 時鐘 / 天氣頁輪播 | — | ✓ | — |
+| 時鐘 / 天氣 / RDS 三頁輪播 | — | — | ✓ |
+| RDS 數位廣播資訊 | — | — | ✓ |
+| Web 遠端遙控面板 + JSON API | — | — | ✓ |
+| OTA 無線韌體更新 | — | — | ✓ |
 
 ## 授權
 
 專案基於 PU2CLR/RDA5807 函式庫開發，感謝原作者 pu2clr 的貢獻。
+v3 使用該函式庫的 vendor 版（`v3/lib/PU2CLR RDA5807/`），僅修正 ESP32 core 3.x 下的 I2C 相容性問題，
+未更動任何功能與 API，仍沿用原 MIT 授權。
